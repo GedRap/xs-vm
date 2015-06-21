@@ -50,7 +50,7 @@ def process_operands(operands_raw):
 
         try:
             indirectly_addressed_register.parseString(operand_raw)
-            new_operand = Operand(type=Operand.TYPE_INDIRECT_ADDRESS, value=operand_raw)
+            new_operand = Operand(type=Operand.TYPE_INDIRECT_ADDRESS, value=operand_raw.replace("[", "", 1).replace("]", "", 1))
             operands.append(new_operand)
             continue
         except:
@@ -66,7 +66,7 @@ def process_operands(operands_raw):
 
         try:
             constant_definition.parseString(operand_raw)
-            new_operand = Operand(type=Operand.TYPE_CONSTANT, value=operand_raw)
+            new_operand = Operand(type=Operand.TYPE_CONSTANT, value=int(operand_raw.replace("#", "", 1)))
             operands.append(new_operand)
             continue
         except:

@@ -27,7 +27,7 @@ class ParserTestCase(unittest.TestCase):
         self.assertEqual(parsed.operands[0].type, Operand.TYPE_REGISTER)
         self.assertEqual(parsed.operands[0].value, "r1")
         self.assertEqual(parsed.operands[1].type, Operand.TYPE_CONSTANT)
-        self.assertEqual(parsed.operands[1].value, "#5")
+        self.assertEqual(parsed.operands[1].value, 5)
         self.assertEqual(len(parsed.operands), 2)
 
     def test_mov_with_label_constant_to_register(self):
@@ -38,7 +38,7 @@ class ParserTestCase(unittest.TestCase):
         self.assertEqual(parsed.operands[0].type, Operand.TYPE_REGISTER)
         self.assertEqual(parsed.operands[0].value, "r1")
         self.assertEqual(parsed.operands[1].type, Operand.TYPE_CONSTANT)
-        self.assertEqual(parsed.operands[1].value, "#5")
+        self.assertEqual(parsed.operands[1].value, 5)
         self.assertEqual(len(parsed.operands), 2)
 
     def test_store_register_to_memory(self):
@@ -50,7 +50,7 @@ class ParserTestCase(unittest.TestCase):
         self.assertEqual(parsed.operands[0].type, Operand.TYPE_REGISTER)
         self.assertEqual(parsed.operands[0].value, "r0")
         self.assertEqual(parsed.operands[1].type, Operand.TYPE_INDIRECT_ADDRESS)
-        self.assertEqual(parsed.operands[1].value, "[r1]")
+        self.assertEqual(parsed.operands[1].value, "r1")
 
 if __name__ == '__main__':
     unittest.main()
