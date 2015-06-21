@@ -4,4 +4,4 @@ class Instruction:
         self.operands = operands
         self.label = label
 
-supported_instructions = ["mov", "add", "nop", "b"]
+supported_instructions = ["mov", "add", "nop", "b", "str"]

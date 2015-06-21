@@ -4,14 +4,17 @@ from instructions import supported_instructions, Instruction
 label_definition = Word(alphanums + "_")
 mnemonic_definition = oneOf(" ".join(supported_instructions), caseless=True)
 register_definition = Combine(CaselessLiteral("r") + Word(nums))
+indirectly_addressed_register = Combine(Literal("[") + register_definition + Literal("]"))
 constant_definition = Combine(Literal("#") + Word(nums))
+
+operand_definitions = register_definition | indirectly_addressed_register |label_definition | constant_definition
 
 
 def parse_line(line):
     instruction_definition = Forward()
 
     instruction_definition << Optional(label_definition.setResultsName("label") + FollowedBy(mnemonic_definition)) + mnemonic_definition.setResultsName("mnemonic") \
-                              + Optional(Group(delimitedList(register_definition | label_definition | constant_definition, ","))).setResultsName("operands")
+                              + Optional(Group(delimitedList(operand_definitions, ","))).setResultsName("operands")
 
     parsed_line = instruction_definition.parseString(line)
 

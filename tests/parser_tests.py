@@ -35,5 +35,14 @@ class ParserTestCase(unittest.TestCase):
         self.assertEqual(parsed.operands[1], "#5")
         self.assertEqual(len(parsed.operands), 2)
 
+    def test_store_register_to_memory(self):
+        parsed = parse_line("str r0, [r1]")
+
+        self.assertIsNone(parsed.label)
+        self.assertEqual(parsed.mnemonic, "str")
+        self.assertEqual(len(parsed.operands), 2)
+        self.assertEqual(parsed.operands[0], "r0")
+        self.assertEqual(parsed.operands[1], "[r1]")
+
 if __name__ == '__main__':
     unittest.main()
