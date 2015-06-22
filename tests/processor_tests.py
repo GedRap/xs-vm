@@ -40,5 +40,15 @@ class ProcessorTestCase(unittest.TestCase):
         self.assertTrue(mock.called)
         self.assertEqual(processor.instructions_executed, 1)
 
+    @patch.object(xsvm.instructions, 'exec_nop')
+    def test_halting(self, mock):
+        nop_instruction = parse_line("nop")
+        processor = Processor()
+        processor.halt()
+        processor.execute_instruction(nop_instruction)
+
+        self.assertFalse(mock.called)
+        self.assertEqual(processor.instructions_executed, 0)
+
 if __name__ == '__main__':
     unittest.main()

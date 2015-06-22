@@ -26,7 +26,7 @@ class MemoryTestCase(unittest.TestCase):
         self.assertEqual(self.memory.resolve_label("foobar"), 4)
 
     def test_resolve_label_not_existing(self):
-        self.assertRaises(RuntimeError, lambda : self.memory.resolve_label("blah"))
+        self.assertRaises(RuntimeError, lambda: self.memory.resolve_label("blah"))
 
 if __name__ == '__main__':
     unittest.main()
