@@ -36,7 +36,7 @@ class ProcessorTestCase(unittest.TestCase):
         nop_instruction = parse_line("nop")
         processor = Processor()
         processor.execute_instruction(nop_instruction)
-        
+
         self.assertTrue(mock.called)
         self.assertEqual(processor.instructions_executed, 1)
 

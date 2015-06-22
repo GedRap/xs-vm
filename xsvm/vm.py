@@ -3,12 +3,22 @@ import instructions
 class Memory:
     def __init__(self):
         self.memory_storage = {}
+        self.labels_map = {}
 
     def set(self, address, value):
         self.memory_storage[address] = value
 
+    def set_label(self, label, address):
+        self.labels_map[label] = address
+
     def get(self, address):
         return self.memory_storage.get(address, 0)
+
+    def resolve_label(self, label):
+        if label not in self.labels_map:
+            raise RuntimeError("Could not resolve label {l}".format(l=label))
+
+        return self.labels_map[label]
 
 
 class RegisterBank:
