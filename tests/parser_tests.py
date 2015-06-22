@@ -1,7 +1,8 @@
 import unittest
 
-from xsvm.parser import parse_line
+from xsvm.parser import parse_line, load_into_memory
 from xsvm.instructions import Operand
+from xsvm.vm import Memory
 
 class ParserTestCase(unittest.TestCase):
     def test_instruction_no_operands_no_label(self):
@@ -51,6 +52,25 @@ class ParserTestCase(unittest.TestCase):
         self.assertEqual(parsed.operands[0].value, "r0")
         self.assertEqual(parsed.operands[1].type, Operand.TYPE_INDIRECT_ADDRESS)
         self.assertEqual(parsed.operands[1].value, "r1")
+
+    def test_load_into_memory(self):
+        source_code = ["mov r0, #1", "mov r1, #5"]
+        test_memory = Memory()
+
+        load_into_memory(test_memory, source_code)
+
+        self.assertEqual(test_memory.get(2), 0)
+
+        inst_1 = test_memory.get(0)
+        inst_2 = test_memory.get(1)
+
+        self.assertEqual(inst_1.mnemonic, "mov")
+        self.assertEqual(inst_1.operands[0].value, "r0")
+        self.assertEqual(inst_1.operands[1].value, 1)
+
+        self.assertEqual(inst_2.mnemonic, "mov")
+        self.assertEqual(inst_2.operands[0].value, "r1")
+        self.assertEqual(inst_2.operands[1].value, 5)
 
 if __name__ == '__main__':
     unittest.main()

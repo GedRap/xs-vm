@@ -73,3 +73,10 @@ def process_operands(operands_raw):
             pass
 
     return operands
+
+def load_into_memory(memory, source_code):
+    memory_pointer = 0
+    for source_code_line in source_code:
+        parsed_line = parse_line(source_code_line)
+        memory.set(memory_pointer, parsed_line)
+        memory_pointer += 1
