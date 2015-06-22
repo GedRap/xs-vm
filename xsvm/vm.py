@@ -51,6 +51,7 @@ class Processor:
     def __init__(self):
         self.register_bank = RegisterBank()
         self.memory = Memory()
+        self.instructions_executed = 0
 
     def fetch_instruction(self):
         pc = self.register_bank.get("pc")
@@ -67,3 +68,4 @@ class Processor:
         executable_name = "exec_" + instruction.mnemonic
         executable = getattr(instructions, executable_name)
         executable(self, instruction)
+        self.instructions_executed += 1

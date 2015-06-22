@@ -15,6 +15,8 @@ class ProcessorTestCase(unittest.TestCase):
         inst_1 = self.cpu.fetch_instruction()
 
         self.assertEqual(self.cpu.register_bank.get("pc"), 1)
+        self.assertEqual(self.cpu.instructions_executed, 0)
+
         self.assertEqual(inst_1.mnemonic, "mov")
         self.assertEqual(inst_1.operands[0].value, "r0")
         self.assertEqual(inst_1.operands[1].value, 1)
@@ -34,7 +36,9 @@ class ProcessorTestCase(unittest.TestCase):
         nop_instruction = parse_line("nop")
         processor = Processor()
         processor.execute_instruction(nop_instruction)
+        
         self.assertTrue(mock.called)
+        self.assertEqual(processor.instructions_executed, 1)
 
 if __name__ == '__main__':
     unittest.main()
