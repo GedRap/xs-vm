@@ -6,6 +6,7 @@ class Instruction:
 
 supported_instructions = ["mov", "add", "nop", "b", "str"]
 
+
 class Operand:
     TYPE_REGISTER = "register"
     TYPE_INDIRECT_ADDRESS = "indirect_address"
@@ -15,3 +16,7 @@ class Operand:
     def __init__(self, type, value):
         self.type = type
         self.value = value
+
+
+def exec_nop(proc, instr):
+    return

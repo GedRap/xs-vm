@@ -62,3 +62,8 @@ class Processor:
         self.register_bank.set("pc", pc + 1)
 
         return instruction
+
+    def execute_instruction(self, instruction):
+        executable_name = "exec_" + instruction.mnemonic
+        executable = getattr(instructions, executable_name)
+        executable(self, instruction)

@@ -1,8 +1,9 @@
 import unittest
+from mock import patch
 
-from xsvm.parser import load_into_memory
+from xsvm.parser import parse_line, load_into_memory
 from xsvm.vm import Processor
-
+import xsvm.instructions
 
 class ProcessorTestCase(unittest.TestCase):
     def setUp(self):
@@ -27,6 +28,13 @@ class ProcessorTestCase(unittest.TestCase):
 
     def test_fetch_non_instruction(self):
         self.assertRaises(RuntimeError, lambda: self.cpu.fetch_instruction())
+
+    @patch.object(xsvm.instructions, 'exec_nop')
+    def test_execute_instruction(self, mock):
+        nop_instruction = parse_line("nop")
+        processor = Processor()
+        processor.execute_instruction(nop_instruction)
+        self.assertTrue(mock.called)
 
 if __name__ == '__main__':
     unittest.main()
