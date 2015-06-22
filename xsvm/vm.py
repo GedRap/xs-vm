@@ -1,3 +1,5 @@
+import instructions
+
 class Memory:
     def __init__(self):
         self.memory_storage = {}
@@ -7,6 +9,7 @@ class Memory:
 
     def get(self, address):
         return self.memory_storage.get(address, 0)
+
 
 class RegisterBank:
     available_registers = [
@@ -42,3 +45,20 @@ class RegisterBank:
     def _validate_register_name(register):
         if register not in RegisterBank.available_registers:
             raise AttributeError("{r} is an invalid register".format(r=register))
+
+
+class Processor:
+    def __init__(self):
+        self.register_bank = RegisterBank()
+        self.memory = Memory()
+
+    def fetch_instruction(self):
+        pc = self.register_bank.get("pc")
+        instruction = self.memory.get(pc)
+
+        if not isinstance(instruction, instructions.Instruction):
+            raise RuntimeError("No instruction located at {addr}".format(addr=pc))
+
+        self.register_bank.set("pc", pc + 1)
+
+        return instruction
