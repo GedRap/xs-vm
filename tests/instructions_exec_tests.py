@@ -1,7 +1,9 @@
 import unittest
+from mock import patch
 
 from xsvm.vm import Processor
 from xsvm.parser import parse_line
+import xsvm.instructions
 
 
 class InstructionsExecutionTestCase(unittest.TestCase):
@@ -69,6 +71,19 @@ class InstructionsExecutionTestCase(unittest.TestCase):
         self.assertEqual(self.proc.register_bank.get("r1"), 5)
         self.assertEqual(self.proc.register_bank.get("r2"), 4)
         self.assertEqual(self.proc.register_bank.get("r0"), 23)
+
+    def test_swi_0_functionally_correct(self):
+        swi_instruction = parse_line("swi #0")
+        processor = Processor()
+        processor.execute_instruction(swi_instruction)
+
+        self.assertEqual(processor.instructions_executed, 1)
+        self.assertTrue(processor.halted)
+
+    def test_swi_unhandled_interrupt(self):
+        swi_instruction = parse_line("swi #99")
+        processor = Processor()
+        self.assertRaises(RuntimeError, lambda : processor.execute_instruction(swi_instruction))
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,10 +1,12 @@
+import sys
+
 class Instruction:
     def __init__(self, mnemonic, operands, label):
         self.mnemonic = mnemonic
         self.operands = operands
         self.label = label
 
-supported_instructions = ["mov", "add", "sub", "mul", "mla", "nop", "b", "str"]
+supported_instructions = ["mov", "add", "sub", "mul", "mla", "nop", "b", "str", "swi"]
 
 
 class Operand:
@@ -65,3 +67,20 @@ def exec_mla(proc, instr):
     number_3 = instr.operands[3].extract_value(proc)
 
     proc.register_bank.set(instr.operands[0].value, number_1 * number_2 + number_3)
+
+
+def exec_swi(proc, instr):
+    interrupt_number = instr.operands[0].extract_value(proc)
+    executable_name = "exec_swi_" + str(interrupt_number)
+
+    try:
+        current_module = sys.modules[__name__]
+        executable = getattr(current_module, executable_name)
+    except AttributeError:
+        raise RuntimeError("Unhandled software interrupt {swi}".format(swi=interrupt_number))
+
+    executable(proc, instr)
+
+
+def exec_swi_0(proc, instr):
+    proc.halt()
