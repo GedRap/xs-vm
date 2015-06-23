@@ -63,6 +63,7 @@ class Processor:
         self.memory = Memory()
         self.instructions_executed = 0
         self.halted = False
+        self.comparison_register = 0
 
     def fetch_instruction(self):
         pc = self.register_bank.get("pc")

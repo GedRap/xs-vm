@@ -6,7 +6,7 @@ class Instruction:
         self.operands = operands
         self.label = label
 
-supported_instructions = ["mov", "add", "sub", "mul", "mla", "nop", "b", "str", "swi"]
+supported_instructions = ["mov", "add", "sub", "mul", "mla", "nop", "b", "str", "swi", "cmp"]
 
 
 class Operand:
@@ -68,6 +68,12 @@ def exec_mla(proc, instr):
 
     proc.register_bank.set(instr.operands[0].value, number_1 * number_2 + number_3)
 
+
+def exec_cmp(proc, instr):
+    op1 = instr.operands[0].extract_value(proc)
+    op2 = instr.operands[1].extract_value(proc)
+
+    proc.comparison_register = op1 - op2
 
 def exec_swi(proc, instr):
     interrupt_number = instr.operands[0].extract_value(proc)

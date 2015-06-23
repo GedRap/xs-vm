@@ -72,6 +72,15 @@ class InstructionsExecutionTestCase(unittest.TestCase):
         self.assertEqual(self.proc.register_bank.get("r2"), 4)
         self.assertEqual(self.proc.register_bank.get("r0"), 23)
 
+    def test_cmp(self):
+        instr_1 = parse_line("mov r0, #5")
+        instr_2 = parse_line("cmp r0, #3")
+
+        self.proc.execute_instruction(instr_1)
+        self.proc.execute_instruction(instr_2)
+
+        self.assertGreater(self.proc.comparison_register, 0)
+
     def test_swi_0_functionally_correct(self):
         swi_instruction = parse_line("swi #0")
         processor = Processor()
