@@ -8,7 +8,7 @@ class Instruction:
 
 
 _arithmetic_instructions = ["add", "sub", "mul", "mla"]
-_comparison_and_branching_instructions = ["cmp", "beq", "bne", "blt", "bgt"]
+_comparison_and_branching_instructions = ["cmp", "beq", "bne", "blt", "bgt", "bl"]
 _memory_instructions = ["str", "push", "pop"]
 
 supported_instructions = ["mov", "nop", "b", "swi"] \
@@ -115,6 +115,12 @@ def exec_bgt(proc, instr):
     if proc.comparison_register > 0:
         new_pc = instr.operands[0].extract_value(proc)
         proc.register_bank.set("pc", new_pc)
+
+
+def exec_bl(proc, instr):
+    proc.register_bank.set("lr", proc.register_bank.get("pc"))
+    new_pc = instr.operands[0].extract_value(proc)
+    proc.register_bank.set("pc", new_pc)
 
 
 def exec_push(proc, instr):

@@ -165,6 +165,14 @@ class InstructionsExecutionTestCase(unittest.TestCase):
 
         self.assertEqual(self.proc.register_bank.get("pc"), 4)
 
+    def test_bl(self):
+        load_into_memory(self.proc.memory, ["bl foobar", "nop", "foobar nop"])
+
+        self.proc.step()
+
+        self.assertEqual(self.proc.register_bank.get("lr"), 1)
+        self.assertEqual(self.proc.register_bank.get("pc"), 2)
+
     def test_push(self):
         load_into_memory(self.proc.memory, ["mov r0, #5", "push r0"])
 
