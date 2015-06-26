@@ -53,6 +53,17 @@ class ParserTestCase(unittest.TestCase):
         self.assertEqual(parsed.operands[1].type, Operand.TYPE_INDIRECT_ADDRESS)
         self.assertEqual(parsed.operands[1].value, "r1")
 
+    def test_label_with_colon(self):
+        parsed = parse_line("foobar: str r0, [r1]")
+
+        self.assertEqual(parsed.label, "foobar:")
+        self.assertEqual(parsed.mnemonic, "str")
+        self.assertEqual(len(parsed.operands), 2)
+        self.assertEqual(parsed.operands[0].type, Operand.TYPE_REGISTER)
+        self.assertEqual(parsed.operands[0].value, "r0")
+        self.assertEqual(parsed.operands[1].type, Operand.TYPE_INDIRECT_ADDRESS)
+        self.assertEqual(parsed.operands[1].value, "r1")
+
     def test_load_into_memory(self):
         source_code = ["mov r0, #1", "mov r1, #5"]
         test_memory = Memory()

@@ -1,7 +1,7 @@
 from pyparsing import *
 from instructions import supported_instructions, Instruction, Operand
 
-label_definition = Word(alphanums + "_")
+label_definition = Word(alphanums + "_" + ":")
 mnemonic_definition = oneOf(" ".join(supported_instructions), caseless=True)
 register_definition = Combine(CaselessLiteral("r") + Word(nums))
 indirectly_addressed_register = Combine(Literal("[") + register_definition + Literal("]"))
