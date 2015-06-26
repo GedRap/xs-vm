@@ -2,7 +2,7 @@ from pyparsing import *
 from instructions import supported_instructions, Instruction, Operand
 
 label_definition = Word(alphanums + "_" + ":")
-mnemonic_definition = oneOf(" ".join(supported_instructions), caseless=True)
+mnemonic_definition = oneOf(" ".join(supported_instructions), caseless=True) + FollowedBy(White() | LineEnd())
 register_definition = Combine(CaselessLiteral("r") + Word(nums)) | oneOf("lr pc sp")
 indirectly_addressed_register = Combine(Literal("[") + register_definition + Literal("]"))
 constant_definition = Combine(Literal("#") + Word(nums))
@@ -26,8 +26,10 @@ def parse_line(source_code_line):
         label = None
 
     mnemonic = parsed_line.mnemonic
-    if mnemonic == "":
+    if mnemonic == "" and len(mnemonic) is 0:
         mnemonic = None
+    else:
+        mnemonic = mnemonic[0]
 
     if parsed_line.operands == "":
         operands = None

@@ -73,6 +73,15 @@ class ParserTestCase(unittest.TestCase):
         self.assertEqual(parsed.operands[0].type, Operand.TYPE_REGISTER)
         self.assertEqual(parsed.operands[0].value, "lr")
 
+    def test_parse_label_which_partially_matches_instruction(self):
+        parsed = parse_line("bl addition")
+
+        self.assertIsNone(parsed.label)
+        self.assertEqual(parsed.mnemonic, "bl")
+        self.assertEqual(len(parsed.operands), 1)
+        self.assertEqual(parsed.operands[0].type, Operand.TYPE_LABEL)
+        self.assertEqual(parsed.operands[0].value, "addition")
+
     def test_load_into_memory(self):
         source_code = ["mov r0, #1", "mov r1, #5"]
         test_memory = Memory()
