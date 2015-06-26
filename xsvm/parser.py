@@ -3,7 +3,7 @@ from instructions import supported_instructions, Instruction, Operand
 
 label_definition = Word(alphanums + "_" + ":")
 mnemonic_definition = oneOf(" ".join(supported_instructions), caseless=True)
-register_definition = Combine(CaselessLiteral("r") + Word(nums))
+register_definition = Combine(CaselessLiteral("r") + Word(nums)) | oneOf("lr pc sp")
 indirectly_addressed_register = Combine(Literal("[") + register_definition + Literal("]"))
 constant_definition = Combine(Literal("#") + Word(nums))
 

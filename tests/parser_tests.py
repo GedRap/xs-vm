@@ -64,6 +64,15 @@ class ParserTestCase(unittest.TestCase):
         self.assertEqual(parsed.operands[1].type, Operand.TYPE_INDIRECT_ADDRESS)
         self.assertEqual(parsed.operands[1].value, "r1")
 
+    def test_parse_register_alias(self):
+        parsed = parse_line("push lr")
+
+        self.assertIsNone(parsed.label)
+        self.assertEqual(parsed.mnemonic, "push")
+        self.assertEqual(len(parsed.operands), 1)
+        self.assertEqual(parsed.operands[0].type, Operand.TYPE_REGISTER)
+        self.assertEqual(parsed.operands[0].value, "lr")
+
     def test_load_into_memory(self):
         source_code = ["mov r0, #1", "mov r1, #5"]
         test_memory = Memory()
