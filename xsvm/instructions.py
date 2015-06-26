@@ -6,7 +6,15 @@ class Instruction:
         self.operands = operands
         self.label = label
 
-supported_instructions = ["mov", "add", "sub", "mul", "mla", "nop", "b", "str", "swi", "cmp", "beq", "bne", "blt", "bgt", "push", "pop"]
+
+_arithmetic_instructions = ["add", "sub", "mul", "mla"]
+_comparison_and_branching_instructions = ["cmp", "beq", "bne", "blt", "bgt"]
+_memory_instructions = ["str", "push", "pop"]
+
+supported_instructions = ["mov", "nop", "b", "swi"] \
+                         + _arithmetic_instructions \
+                         + _comparison_and_branching_instructions \
+                         + _memory_instructions
 
 
 class Operand:
