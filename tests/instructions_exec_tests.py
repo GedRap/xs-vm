@@ -1,8 +1,7 @@
 import unittest
-from mock import patch
 
 from xsvm.vm import Processor
-from xsvm.parser import parse_line
+from xsvm.parser import parse_line, load_into_memory
 import xsvm.instructions
 
 
@@ -93,6 +92,78 @@ class InstructionsExecutionTestCase(unittest.TestCase):
         swi_instruction = parse_line("swi #99")
         processor = Processor()
         self.assertRaises(RuntimeError, lambda : processor.execute_instruction(swi_instruction))
+
+    def test_beq_not_performed(self):
+        load_into_memory(self.proc.memory, ["mov r0, #5", "cmp r0, #6", "beq foobar", "nop", "foobar nop"])
+
+        self.proc.step()
+        self.proc.step()
+        self.proc.step() # beq
+
+        self.assertEqual(self.proc.register_bank.get("pc"), 3)
+
+    def test_beq_performed(self):
+        load_into_memory(self.proc.memory, ["mov r0, #5", "cmp r0, #5", "beq foobar", "nop", "foobar nop"])
+
+        self.proc.step()
+        self.proc.step()
+        self.proc.step() # beq
+
+        self.assertEqual(self.proc.register_bank.get("pc"), 4)
+
+    def test_bne_not_performed(self):
+        load_into_memory(self.proc.memory, ["mov r0, #5", "cmp r0, #5", "bne foobar", "nop", "foobar nop"])
+
+        self.proc.step()
+        self.proc.step()
+        self.proc.step() # bne
+
+        self.assertEqual(self.proc.register_bank.get("pc"), 3)
+
+    def test_bne_performed(self):
+        load_into_memory(self.proc.memory, ["mov r0, #5", "cmp r0, #6", "bne foobar", "nop", "foobar nop"])
+
+        self.proc.step()
+        self.proc.step()
+        self.proc.step() # bne
+
+        self.assertEqual(self.proc.register_bank.get("pc"), 4)
+
+    def test_blt_not_performed(self):
+        load_into_memory(self.proc.memory, ["mov r0, #7", "cmp r0, #5", "blt foobar", "nop", "foobar nop"])
+
+        self.proc.step()
+        self.proc.step()
+        self.proc.step()
+
+        self.assertEqual(self.proc.register_bank.get("pc"), 3)
+
+    def test_blt_performed(self):
+        load_into_memory(self.proc.memory, ["mov r0, #5", "cmp r0, #6", "blt foobar", "nop", "foobar nop"])
+
+        self.proc.step()
+        self.proc.step()
+        self.proc.step()
+
+        self.assertEqual(self.proc.register_bank.get("pc"), 4)
+
+    def test_bgt_not_performed(self):
+        load_into_memory(self.proc.memory, ["mov r0, #4", "cmp r0, #5", "bgt foobar", "nop", "foobar nop"])
+
+        self.proc.step()
+        self.proc.step()
+        self.proc.step()
+
+        self.assertEqual(self.proc.register_bank.get("pc"), 3)
+
+    def test_bgt_performed(self):
+        load_into_memory(self.proc.memory, ["mov r0, #8", "cmp r0, #6", "bgt foobar", "nop", "foobar nop"])
+
+        self.proc.step()
+        self.proc.step()
+        self.proc.step()
+
+        self.assertEqual(self.proc.register_bank.get("pc"), 4)
 
 if __name__ == '__main__':
     unittest.main()

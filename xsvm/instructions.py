@@ -6,7 +6,7 @@ class Instruction:
         self.operands = operands
         self.label = label
 
-supported_instructions = ["mov", "add", "sub", "mul", "mla", "nop", "b", "str", "swi", "cmp"]
+supported_instructions = ["mov", "add", "sub", "mul", "mla", "nop", "b", "str", "swi", "cmp", "beq", "bne", "blt", "bgt"]
 
 
 class Operand:
@@ -25,9 +25,18 @@ class Operand:
 
         if self.type == Operand.TYPE_REGISTER:
             if processor is None:
-                raise RuntimeError("Can't extract register value when processor is not set")
+                raise RuntimeError("Can't extract register value if the processor is not passed")
 
             return processor.register_bank.get(self.value)
+
+        if self.type == Operand.TYPE_LABEL:
+            if processor is None:
+                raise RuntimeError("Can't resolve a label if the processor is not passed")
+
+            label = self.value
+            resolved_label = processor.memory.resolve_label(label)
+
+            return resolved_label
 
 
 def exec_nop(proc, instr):
@@ -74,6 +83,31 @@ def exec_cmp(proc, instr):
     op2 = instr.operands[1].extract_value(proc)
 
     proc.comparison_register = op1 - op2
+
+
+def exec_beq(proc, instr):
+    if proc.comparison_register == 0:
+        new_pc = instr.operands[0].extract_value(proc)
+        proc.register_bank.set("pc", new_pc)
+
+
+def exec_bne(proc, instr):
+    if proc.comparison_register != 0:
+        new_pc = instr.operands[0].extract_value(proc)
+        proc.register_bank.set("pc", new_pc)
+
+
+def exec_blt(proc, instr):
+    if proc.comparison_register < 0:
+        new_pc = instr.operands[0].extract_value(proc)
+        proc.register_bank.set("pc", new_pc)
+
+
+def exec_bgt(proc, instr):
+    if proc.comparison_register > 0:
+        new_pc = instr.operands[0].extract_value(proc)
+        proc.register_bank.set("pc", new_pc)
+
 
 def exec_swi(proc, instr):
     interrupt_number = instr.operands[0].extract_value(proc)

@@ -87,3 +87,6 @@ class Processor:
 
     def halt(self):
         self.halted = True
+
+    def step(self):
+        self.execute_instruction(self.fetch_instruction())
