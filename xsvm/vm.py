@@ -78,6 +78,8 @@ class Processor:
 
         self.register_bank.set("sp", 0xFFFFFF)
 
+        self.instructions_executed_grouped = {}
+
     def fetch_instruction(self):
         pc = self.register_bank.get("pc")
         instruction = self.memory.get(pc)
@@ -98,6 +100,11 @@ class Processor:
         executable(self, instruction)
         self.instructions_executed += 1
 
+        if instruction.mnemonic not in self.instructions_executed_grouped:
+            self.instructions_executed_grouped[instruction.mnemonic] = 0
+
+        self.instructions_executed_grouped[instruction.mnemonic] += 1
+
     def halt(self):
         self.halted = True
 
@@ -107,3 +114,29 @@ class Processor:
     def execute_until_halted(self):
         while not self.halted:
             self.step()
+
+    def dump_instructions_executed_grouped(self):
+        keys = self.instructions_executed_grouped.keys()
+        table_contents = []
+        for i in range(0, len(keys) + 1, 2):
+            table_row = []
+            if len(keys) > i:
+                mnemonic_left = keys[i]
+                count_left = self.instructions_executed_grouped[mnemonic_left]
+                table_row.append(mnemonic_left)
+                table_row.append(count_left)
+            if len(keys) > i + 1:
+                mnemonic_right = keys[i+1]
+                count_right = self.instructions_executed_grouped[mnemonic_right]
+                table_row.append(mnemonic_right)
+                table_row.append(count_right)
+
+            if len(table_row) > 0:
+                table_contents.append(table_row)
+
+        if len(table_contents) > 1:
+            headers = ["Instruction", "Count", "Instruction", "Count"]
+        else:
+            headers = ["Instruction", "Count"]
+
+        return tabulate(table_contents, headers=headers, tablefmt="fancy_grid")
