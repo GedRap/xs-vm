@@ -6,7 +6,7 @@ class Instruction:
         self.operands = operands
         self.label = label
 
-supported_instructions = ["mov", "add", "sub", "mul", "mla", "nop", "b", "str", "swi", "cmp", "beq", "bne", "blt", "bgt"]
+supported_instructions = ["mov", "add", "sub", "mul", "mla", "nop", "b", "str", "swi", "cmp", "beq", "bne", "blt", "bgt", "push", "pop"]
 
 
 class Operand:
@@ -107,6 +107,20 @@ def exec_bgt(proc, instr):
     if proc.comparison_register > 0:
         new_pc = instr.operands[0].extract_value(proc)
         proc.register_bank.set("pc", new_pc)
+
+
+def exec_push(proc, instr):
+    sp_to_push_to = proc.register_bank.get("sp") - 1
+    value_to_push = instr.operands[0].extract_value(proc)
+    proc.memory.set(sp_to_push_to, value_to_push)
+    proc.register_bank.set("sp", sp_to_push_to)
+
+
+def exec_pop(proc, instr):
+    sp_to_pop_from = proc.register_bank.get("sp")
+    popped_value = proc.memory.get(sp_to_pop_from)
+    proc.register_bank.set(instr.operands[0].value, popped_value)
+    proc.register_bank.set("sp", sp_to_pop_from + 1)
 
 
 def exec_swi(proc, instr):

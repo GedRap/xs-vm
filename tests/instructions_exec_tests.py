@@ -165,5 +165,28 @@ class InstructionsExecutionTestCase(unittest.TestCase):
 
         self.assertEqual(self.proc.register_bank.get("pc"), 4)
 
+    def test_push(self):
+        load_into_memory(self.proc.memory, ["mov r0, #5", "push r0"])
+
+        self.proc.step()
+        self.proc.step()
+
+        sp = self.proc.register_bank.get("sp")
+
+        self.assertEqual(self.proc.memory.get(sp), 5)
+
+    def test_pop(self):
+        load_into_memory(self.proc.memory, ["mov r0, #5", "mov r1, #9", "push r0", "push r1", "pop r2", "pop r3"])
+
+        self.proc.step()
+        self.proc.step()
+        self.proc.step()
+        self.proc.step()
+        self.proc.step()
+        self.proc.step()
+
+        self.assertEqual(self.proc.register_bank.get("r2"), 9)
+        self.assertEqual(self.proc.register_bank.get("r3"), 5)
+
 if __name__ == '__main__':
     unittest.main()

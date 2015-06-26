@@ -61,9 +61,12 @@ class Processor:
     def __init__(self):
         self.register_bank = RegisterBank()
         self.memory = Memory()
+
         self.instructions_executed = 0
         self.halted = False
         self.comparison_register = 0
+
+        self.register_bank.set("sp", 0xFFFFFF)
 
     def fetch_instruction(self):
         pc = self.register_bank.get("pc")
