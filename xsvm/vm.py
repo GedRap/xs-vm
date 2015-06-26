@@ -1,4 +1,5 @@
 import instructions
+from tabulate import tabulate
 
 class Memory:
     def __init__(self):
@@ -43,6 +44,15 @@ class RegisterBank:
         RegisterBank._validate_register_name(register)
 
         self.registers[register] = value
+
+    def dump_content(self):
+        table_content = []
+        for i in range(0, 16, 2):
+            reg_left = "r{r}".format(r=i)
+            reg_right = "r{r}".format(r=i+1)
+            table_content.append([reg_left, self.get(reg_left), reg_right, self.get(reg_right)])
+
+        return tabulate(table_content, tablefmt="fancy_grid")
 
     @staticmethod
     def _resolve_alias(register):
