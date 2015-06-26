@@ -50,5 +50,13 @@ class ProcessorTestCase(unittest.TestCase):
         self.assertFalse(mock.called)
         self.assertEqual(processor.instructions_executed, 0)
 
+    def test_exiting_on_halt(self):
+        load_into_memory(self.cpu.memory, ["nop", "nop", "swi #0", "nop"])
+
+        self.cpu.execute_until_halted()
+
+        self.assertEqual(self.cpu.instructions_executed, 3)
+        self.assertEqual(self.cpu.register_bank.get("pc"), 3)
+
 if __name__ == '__main__':
     unittest.main()

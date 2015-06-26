@@ -93,3 +93,7 @@ class Processor:
 
     def step(self):
         self.execute_instruction(self.fetch_instruction())
+
+    def execute_until_halted(self):
+        while not self.halted:
+            self.step()
