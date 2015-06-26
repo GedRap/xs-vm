@@ -11,6 +11,9 @@ operand_definitions = register_definition | indirectly_addressed_register | labe
 
 
 def parse_line(source_code_line):
+    if source_code_line == "":
+        return None
+
     instruction_definition = Forward()
 
     instruction_definition << Optional(label_definition.setResultsName("label") + FollowedBy(mnemonic_definition)) + mnemonic_definition.setResultsName("mnemonic") \
@@ -79,9 +82,17 @@ def load_into_memory(memory, source_code):
     memory_pointer = 0
     for source_code_line in source_code:
         parsed_line = parse_line(source_code_line)
-        memory.set(memory_pointer, parsed_line)
+        if parsed_line is not None:
+            memory.set(memory_pointer, parsed_line)
 
-        if parsed_line.label is not None:
-            memory.set_label(parsed_line.label, memory_pointer)
+            if parsed_line.label is not None:
+                memory.set_label(parsed_line.label, memory_pointer)
 
-        memory_pointer += 1
+            memory_pointer += 1
+
+
+def load_file_into_memory(memory, filename):
+    file_handler = open(filename)
+    lines_read = [line_read.strip() for line_read in file_handler]
+
+    load_into_memory(memory, lines_read)
