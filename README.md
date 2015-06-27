@@ -80,9 +80,7 @@ For function calls, the result is stored in R0, and R1-R3 are normally used to p
 | sub         | sub r0, r1, #3     | r0 = r1 - 3                                                                       |
 | mul         | mul r0, r1, #4     | r0 = r1 * 4                                                                       |
 | mla         | mla r0, r1, #3, #5 | r0 = r1 * 3 + 5                                                                   |
-| cmp         | cmp r0, r1         | Compare 2 numerical values and store the difference in comparison register        |
-|             |                    | (comp_reg = r0 - r1).                                                             |
-|             |                    | The value is used later for conditional branching.                                |
+| cmp         | cmp r0, r1         | Compare 2 numerical values and store the difference in comparison register (comp_reg = r0 - r1). The value is used later for conditional branching. |
 | b           | b main             | Always branch. Set PC to the instruction to which the given label is pointing to. |
 |             | b 0x001            | Instead of label, memory location can be also passed.                             |
 | beq         | beq main           | Branch if equal, the result of cmp instruction is used.                           |
