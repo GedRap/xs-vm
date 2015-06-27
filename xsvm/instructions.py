@@ -93,6 +93,11 @@ def exec_cmp(proc, instr):
     proc.comparison_register = op1 - op2
 
 
+def exec_b(proc, instr):
+    new_pc = instr.operands[0].extract_value(proc)
+    proc.register_bank.set("pc", new_pc)
+
+
 def exec_beq(proc, instr):
     if proc.comparison_register == 0:
         new_pc = instr.operands[0].extract_value(proc)
