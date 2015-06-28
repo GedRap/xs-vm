@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>xs-vm by GedRap</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">xs-vm</h1>
+      <h2 class="project-tagline">eXtremely small virtual machine written in Python</h2>
+      <a href="https://github.com/GedRap/xs-vm" class="btn">View on GitHub</a>
+      <a href="https://github.com/GedRap/xs-vm/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/GedRap/xs-vm/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="xs-vm-" class="anchor" href="#xs-vm-" aria-hidden="true"><span class="octicon octicon-link"></span></a>xs-vm <a href="https://travis-ci.org/GedRap/xs-vm"><img src="https://travis-ci.org/GedRap/xs-vm.svg" alt="Build Status"></a>
+</h1>
+
+<h2>
+<a id="extremely-simple-virtual-machine" class="anchor" href="#extremely-simple-virtual-machine" aria-hidden="true"><span class="octicon octicon-link"></span></a>eXtremely Simple Virtual Machine</h2>
+
+<p>The purpose of this project is to implement a simple virtual machine, capable of executing assembly code similar to ARM.
+I will keep it simple (so probably no operation modes, interrupt handling, etc) because I built it for educational
+ purposes. Why Python? Development speed, as opposed to performance, is the key priority for this project so Python
+ fits in perfectly.</p>
+
+<h2>
+<a id="installing-and-running" class="anchor" href="#installing-and-running" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installing and running</h2>
+
+<h3>
+<a id="executing-code" class="anchor" href="#executing-code" aria-hidden="true"><span class="octicon octicon-link"></span></a>Executing code</h3>
+
+<pre><code>$ cat demos/function_call.s
+mov r1, #1
+mov r2, #3
+bl func1
+swi #0
+
+func1    push lr
+         add r0, r1, r2
+
+$ python run.py demos/function_call.s
+Instructions executed: 7
+Instructions executed by type:
+╒═══════════════╤═════════╤═══════════════╤═════════╕
+│ Instruction   │   Count │ Instruction   │   Count │
+╞═══════════════╪═════════╪═══════════════╪═════════╡
+│ swi           │       1 │ bl            │       1 │
+├───────────────┼─────────┼───────────────┼─────────┤
+│ mov           │       2 │ pop           │       1 │
+├───────────────┼─────────┼───────────────┼─────────┤
+│ add           │       1 │ push          │       1 │
+╘═══════════════╧═════════╧═══════════════╧═════════╛
+Register bank after halting:
+╒═════╤═══╤═════╤══════════╕
+│ r0  │ 4 │ r1  │        1 │
+├─────┼───┼─────┼──────────┤
+│ r2  │ 3 │ r3  │        0 │
+├─────┼───┼─────┼──────────┤
+│ r4  │ 0 │ r5  │        0 │
+├─────┼───┼─────┼──────────┤
+│ r6  │ 0 │ r7  │        0 │
+├─────┼───┼─────┼──────────┤
+│ r8  │ 0 │ r9  │        0 │
+├─────┼───┼─────┼──────────┤
+│ r10 │ 0 │ r11 │        0 │
+├─────┼───┼─────┼──────────┤
+│ r12 │ 0 │ r13 │ 16777215 │
+├─────┼───┼─────┼──────────┤
+│ r14 │ 3 │ r15 │        4 │
+╘═════╧═══╧═════╧══════════╛
+</code></pre>
+
+<h3>
+<a id="installing-and-running-tests" class="anchor" href="#installing-and-running-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installing and running tests</h3>
+
+<p>Just clone this repository and install the dependencies (<code>pip install -r requirements.txt</code>).</p>
+
+<p>You can run the tests simply by running <code>nosetests</code> from the project root directory.</p>
+
+<h2>
+<a id="architecture" class="anchor" href="#architecture" aria-hidden="true"><span class="octicon octicon-link"></span></a>Architecture</h2>
+
+<p>The VM has 16 registers (R0-R15). Most of the are general purpose, with a few special ones:</p>
+
+<ul>
+<li><p>SP (R13). Stack pointer. Points to the last element pushed to the stack (or 0xFFFFFF if nothing has been pushed yet).</p></li>
+<li><p>LR (R14). Link register. Holds a return address of the function call.</p></li>
+<li><p>PC (R15). Program counter. Holds the address of the instruction in memory which will be executed next.</p></li>
+</ul>
+
+<p>For function calls, the result is stored in R0, and R1-R3 are normally used to pass the parameters.</p>
+
+<h3>
+<a id="supported-instructions" class="anchor" href="#supported-instructions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Supported instructions</h3>
+
+<table>
+<thead>
+<tr>
+<th>Instruction</th>
+<th>Example</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mov</td>
+<td>mov r1, #5</td>
+<td>Move some value (either other register or a constant) to the register.</td>
+</tr>
+<tr>
+<td></td>
+<td>mov r1, r2</td>
+<td></td>
+</tr>
+<tr>
+<td>add</td>
+<td>add r0, r1, #3</td>
+<td>r0 = r1 + 3</td>
+</tr>
+<tr>
+<td>sub</td>
+<td>sub r0, r1, #3</td>
+<td>r0 = r1 - 3</td>
+</tr>
+<tr>
+<td>mul</td>
+<td>mul r0, r1, #4</td>
+<td>r0 = r1 * 4</td>
+</tr>
+<tr>
+<td>mla</td>
+<td>mla r0, r1, #3, #5</td>
+<td>r0 = r1 * 3 + 5</td>
+</tr>
+<tr>
+<td>cmp</td>
+<td>cmp r0, r1</td>
+<td>Compare 2 numerical values and store the difference in comparison register (comp_reg = r0 - r1). The value is used later for conditional branching.</td>
+</tr>
+<tr>
+<td>b</td>
+<td>b main</td>
+<td>Always branch. Set PC to the instruction to which the given label is pointing to.</td>
+</tr>
+<tr>
+<td></td>
+<td>b 0x001</td>
+<td>Instead of label, memory location can be also passed.</td>
+</tr>
+<tr>
+<td>beq</td>
+<td>beq main</td>
+<td>Branch if equal, the result of cmp instruction is used.</td>
+</tr>
+<tr>
+<td>bne</td>
+<td>bne main</td>
+<td>Branch if not equal.</td>
+</tr>
+<tr>
+<td>blt</td>
+<td>blt foo</td>
+<td>Branch if less than (comp_reg &lt; 0).</td>
+</tr>
+<tr>
+<td>bgt</td>
+<td>bgt foo</td>
+<td>Branch if greater than (comp_reg &gt; 0).</td>
+</tr>
+<tr>
+<td>bl</td>
+<td>bl printf</td>
+<td>Branch and link. Stores PC in LR, equivalent of a function call.</td>
+</tr>
+<tr>
+<td>nop</td>
+<td>nop</td>
+<td>No OPeration. Do nothing.</td>
+</tr>
+<tr>
+<td>push</td>
+<td>push r0</td>
+<td>Push the value of r0 to the stack.</td>
+</tr>
+<tr>
+<td>pop</td>
+<td>pop r1</td>
+<td>Pop the element from the stack and store the value in r1.</td>
+</tr>
+<tr>
+<td>swi</td>
+<td>swi #0</td>
+<td>Software interrupt. See below.</td>
+</tr>
+</tbody>
+</table>
+
+<h4>
+<a id="software-interrupts" class="anchor" href="#software-interrupts" aria-hidden="true"><span class="octicon octicon-link"></span></a>Software interrupts</h4>
+
+<p>In xs-vm, software interrupts is a method of communication between the application being executed and the virtual 
+machine executing it.</p>
+
+<p>The list of supported software interrupts:</p>
+
+<table>
+<thead>
+<tr>
+<th>Interrupt</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>swi #0</td>
+<td>Halt. Stop executing the application and quit</td>
+</tr>
+</tbody>
+</table>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/GedRap/xs-vm">xs-vm</a> is maintained by <a href="https://github.com/GedRap">GedRap</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
