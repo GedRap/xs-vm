@@ -19,6 +19,7 @@ swi #0
 
 func1    push lr
          add r0, r1, r2
+         pop pc
          
 $ python run.py demos/function_call.s
 Instructions executed: 7
