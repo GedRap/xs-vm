@@ -68,7 +68,7 @@ class RegisterBank:
 
 
 class Processor:
-    def __init__(self):
+    def __init__(self, debug=False):
         self.register_bank = RegisterBank()
         self.memory = Memory()
 
@@ -80,12 +80,17 @@ class Processor:
 
         self.instructions_executed_grouped = {}
 
+        self.debug = debug
+
     def fetch_instruction(self):
         pc = self.register_bank.get("pc")
         instruction = self.memory.get(pc)
 
         if not isinstance(instruction, instructions.Instruction):
             raise RuntimeError("No instruction located at {addr}".format(addr=pc))
+
+        if self.debug:
+            print "Executing {i} from {a}".format(i=instruction.original_instruction, a=pc)
 
         self.register_bank.set("pc", pc + 1)
 
@@ -105,14 +110,20 @@ class Processor:
 
         self.instructions_executed_grouped[instruction.mnemonic] += 1
 
+        if self.debug:
+            print "Register bank after executing the instruction:"
+            print self.register_bank.dump_content()
+
     def halt(self):
         self.halted = True
 
     def step(self):
         self.execute_instruction(self.fetch_instruction())
 
-    def execute_until_halted(self):
+    def execute_until_halted(self, instructions_limit=None):
         while not self.halted:
+            if instructions_limit is not None and self.instructions_executed == instructions_limit:
+                break
             self.step()
 
     def dump_instructions_executed_grouped(self):
