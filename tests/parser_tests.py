@@ -11,6 +11,7 @@ class ParserTestCase(unittest.TestCase):
         self.assertEqual(parsed.mnemonic, "nop")
         self.assertIsNone(parsed.label)
         self.assertIsNone(parsed.operands)
+        self.assertEqual(parsed.original_instruction, "nop")
 
     def test_instruction_single_operand(self):
         parsed = parse_line("b halt")
@@ -19,6 +20,7 @@ class ParserTestCase(unittest.TestCase):
         self.assertEqual(parsed.operands[0].type, Operand.TYPE_LABEL)
         self.assertEqual(parsed.operands[0].value, "halt")
         self.assertIsNone(parsed.label)
+        self.assertEqual(parsed.original_instruction, "b halt")
 
     def test_mov_without_label_constant_to_register(self):
         parsed = parse_line("mov r1, #5")
@@ -30,6 +32,7 @@ class ParserTestCase(unittest.TestCase):
         self.assertEqual(parsed.operands[1].type, Operand.TYPE_CONSTANT)
         self.assertEqual(parsed.operands[1].value, 5)
         self.assertEqual(len(parsed.operands), 2)
+        self.assertEqual(parsed.original_instruction, "mov r1, #5")
 
     def test_mov_with_label_constant_to_register(self):
         parsed = parse_line("hello mov r1, #5")
@@ -41,6 +44,7 @@ class ParserTestCase(unittest.TestCase):
         self.assertEqual(parsed.operands[1].type, Operand.TYPE_CONSTANT)
         self.assertEqual(parsed.operands[1].value, 5)
         self.assertEqual(len(parsed.operands), 2)
+        self.assertEqual(parsed.original_instruction, "hello mov r1, #5")
 
     def test_store_register_to_memory(self):
         parsed = parse_line("str r0, [r1]")

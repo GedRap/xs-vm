@@ -1,11 +1,11 @@
 import sys
 
 class Instruction:
-    def __init__(self, mnemonic, operands, label):
+    def __init__(self, mnemonic, operands, label, original_instruction):
         self.mnemonic = mnemonic
         self.operands = operands
         self.label = label
-
+        self.original_instruction = original_instruction
 
 _arithmetic_instructions = ["add", "sub", "mul", "mla"]
 _comparison_and_branching_instructions = ["cmp", "beq", "bne", "blt", "bgt", "bl"]

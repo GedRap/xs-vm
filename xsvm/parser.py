@@ -37,7 +37,7 @@ def parse_line(source_code_line):
         operands_raw = parsed_line.operands[0]
         operands = process_operands(operands_raw)
 
-    parsed_instruction = Instruction(label=label, mnemonic=mnemonic, operands=operands)
+    parsed_instruction = Instruction(label=label, mnemonic=mnemonic, operands=operands, original_instruction=source_code_line)
 
     return parsed_instruction
 
