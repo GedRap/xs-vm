@@ -3,7 +3,7 @@
 
 The purpose of this project is to implement a simple virtual machine, capable of executing assembly code similar to ARM.
 I will keep it simple (so probably no operation modes, interrupt handling, etc) because I built it for educational
- purposes. Yet, it's powerful enough to do things like recursion (see [https://github.com/GedRap/xs-vm/blob/master/demos/fibonacci.s](Fibonacci example)). Why Python? Development speed, as opposed to performance, is the key priority for this project so Python
+ purposes. Yet, it's powerful enough to do things like recursion (see the [Fibonacci example](https://github.com/GedRap/xs-vm/blob/master/demos/fibonacci.s) ). Why Python? Development speed, as opposed to performance, is the key priority for this project so Python
  fits in perfectly.
  
 ## Installing and running
