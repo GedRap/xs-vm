@@ -24,11 +24,11 @@
 </h1>
 
 <h2>
-<a id="extremely-small-virtual-machine" class="anchor" href="#extremely-small-virtual-machine" aria-hidden="true"><span class="octicon octicon-link"></span></a>eXtremely Small Virtual Machine</h2>
+<a id="extremely-simple-virtual-machine" class="anchor" href="#extremely-simple-virtual-machine" aria-hidden="true"><span class="octicon octicon-link"></span></a>eXtremely Simple Virtual Machine</h2>
 
 <p>The purpose of this project is to implement a simple virtual machine, capable of executing assembly code similar to ARM.
 I will keep it simple (so probably no operation modes, interrupt handling, etc) because I built it for educational
- purposes. Why Python? Development speed, as opposed to performance, is the key priority for this project so Python
+ purposes. Yet, it's powerful enough to do things like recursion (see the <a href="https://github.com/GedRap/xs-vm/blob/master/demos/fibonacci.s">Fibonacci example</a> ). Why Python? Development speed, as opposed to performance, is the key priority for this project so Python
  fits in perfectly.</p>
 
 <h2>
@@ -45,6 +45,7 @@ swi #0
 
 func1    push lr
          add r0, r1, r2
+         pop pc
 
 $ python run.py demos/function_call.s
 Instructions executed: 7
@@ -76,6 +77,52 @@ Register bank after halting:
 ├─────┼───┼─────┼──────────┤
 │ r14 │ 3 │ r15 │        4 │
 ╘═════╧═══╧═════╧══════════╛
+</code></pre>
+
+<p>Passing <code>debug</code> as the second argument will enable the debugging mode, in which the values of the register bank will be dumped after executing every instruction:</p>
+
+<pre><code>$ python run.py demos/function_call.s debug
+Debug mode: True
+Executing mov r1, #1 from 0
+Register bank after executing the instruction:
+╒═════╤═══╤═════╤══════════╕
+│ r0  │ 0 │ r1  │        1 │
+├─────┼───┼─────┼──────────┤
+│ r2  │ 0 │ r3  │        0 │
+├─────┼───┼─────┼──────────┤
+│ r4  │ 0 │ r5  │        0 │
+├─────┼───┼─────┼──────────┤
+│ r6  │ 0 │ r7  │        0 │
+├─────┼───┼─────┼──────────┤
+│ r8  │ 0 │ r9  │        0 │
+├─────┼───┼─────┼──────────┤
+│ r10 │ 0 │ r11 │        0 │
+├─────┼───┼─────┼──────────┤
+│ r12 │ 0 │ r13 │ 16777215 │
+├─────┼───┼─────┼──────────┤
+│ r14 │ 0 │ r15 │        1 │
+╘═════╧═══╧═════╧══════════╛
+Executing mov r2, #3 from 1
+Register bank after executing the instruction:
+╒═════╤═══╤═════╤══════════╕
+│ r0  │ 0 │ r1  │        1 │
+├─────┼───┼─────┼──────────┤
+│ r2  │ 3 │ r3  │        0 │
+├─────┼───┼─────┼──────────┤
+│ r4  │ 0 │ r5  │        0 │
+├─────┼───┼─────┼──────────┤
+│ r6  │ 0 │ r7  │        0 │
+├─────┼───┼─────┼──────────┤
+│ r8  │ 0 │ r9  │        0 │
+├─────┼───┼─────┼──────────┤
+│ r10 │ 0 │ r11 │        0 │
+├─────┼───┼─────┼──────────┤
+│ r12 │ 0 │ r13 │ 16777215 │
+├─────┼───┼─────┼──────────┤
+│ r14 │ 0 │ r15 │        2 │
+╘═════╧═══╧═════╧══════════╛
+Executing bl func1 from 2
+.......................
 </code></pre>
 
 <h3>
