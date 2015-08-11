@@ -53,10 +53,10 @@ Register bank after halting:
 ╘═════╧═══╧═════╧══════════╛
 ```
 
-Passing `debug` as the second argument will enable the debugging mode, in which the values of the register bank will be dumped after executing every instruction:
+Using `-d` or `--debug` will enable the debugging mode, in which the values of the register bank will be dumped after executing every instruction:
 
 ```
-$ python run.py demos/function_call.s debug
+$ python run.py --debug demos/function_call.s
 Debug mode: True
 Executing mov r1, #1 from 0
 Register bank after executing the instruction:
