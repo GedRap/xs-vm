@@ -1,18 +1,19 @@
 from xsvm import vm, parser
-import sys
+from argparse import ArgumentParser
 
-if len(sys.argv) >= 3 and sys.argv[2] == "debug":
-    debug = True
-else:
-    debug = False
 
-print "Debug mode: {d}".format(d=debug)
+args = ArgumentParser()
+args.add_argument("filename")
+args.add_argument("-d", "--debug", action="store_true", default=False)
+args.add_argument("-m", "--max-instructions", metavar='', type=int, default=5000)
+args = args.parse_args()
 
-machine = vm.Processor(debug=debug)
-filename = sys.argv[1]
-parser.load_file_into_memory(machine.memory, filename)
+print "Debug mode: {d}".format(d=args.debug)
 
-machine.execute_until_halted(instructions_limit=5000)
+machine = vm.Processor(debug=args.debug)
+parser.load_file_into_memory(machine.memory, args.filename)
+
+machine.execute_until_halted(instructions_limit=args.max_instructions)
 
 print "Instructions executed: {i}".format(i=machine.instructions_executed)
 print "Instructions executed by type:"
