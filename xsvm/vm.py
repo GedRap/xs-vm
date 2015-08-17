@@ -90,7 +90,7 @@ class Processor:
             raise RuntimeError("No instruction located at {addr}".format(addr=pc))
 
         if self.debug:
-            print "Executing {i} from {a}".format(i=instruction.original_instruction, a=pc)
+            print("Executing {i} from {a}".format(i=instruction.original_instruction, a=pc))
 
         self.register_bank.set("pc", pc + 1)
 
@@ -111,8 +111,8 @@ class Processor:
         self.instructions_executed_grouped[instruction.mnemonic] += 1
 
         if self.debug:
-            print "Register bank after executing the instruction:"
-            print self.register_bank.dump_content()
+            print("Register bank after executing the instruction:")
+            print(self.register_bank.dump_content())
 
     def halt(self):
         self.halted = True
