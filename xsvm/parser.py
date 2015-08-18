@@ -1,5 +1,5 @@
 from pyparsing import *
-from instructions import supported_instructions, Instruction, Operand
+from xsvm.instructions import supported_instructions, Instruction, Operand
 
 label_definition = Word(alphanums + "_" + ":")
 mnemonic_definition = oneOf(" ".join(supported_instructions), caseless=True) + FollowedBy(White() | LineEnd())

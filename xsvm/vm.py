@@ -1,4 +1,4 @@
-import instructions
+from xsvm import instructions
 from tabulate import tabulate
 
 class Memory:
@@ -127,7 +127,7 @@ class Processor:
             self.step()
 
     def dump_instructions_executed_grouped(self):
-        keys = self.instructions_executed_grouped.keys()
+        keys = list(self.instructions_executed_grouped.keys())
         table_contents = []
         for i in range(0, len(keys) + 1, 2):
             table_row = []
