@@ -5,7 +5,7 @@ from argparse import ArgumentParser
 args = ArgumentParser()
 args.add_argument("filename")
 args.add_argument("-d", "--debug", action="store_true", default=False)
-args.add_argument("-m", "--max-instructions", metavar='', type=int, default=5000)
+args.add_argument("-m", "--max-instructions", metavar='', type=int, default=None)
 args = args.parse_args()
 
 print("Debug mode: {d}".format(d=args.debug))
