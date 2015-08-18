@@ -7,6 +7,8 @@ I will keep it simple (so probably no operation modes, interrupt handling, etc) 
  fits in perfectly.
 
 It is distributed under MIT license (see license.txt for the details).
+
+All Python versions from 2.7 up to 3.4 are supported.
  
 ## Installing and running
  
